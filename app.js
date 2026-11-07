@@ -286,7 +286,9 @@ function switchTab(tabId) {
   });
 
   // Re-create lucide icons in newly visible content
-  lucide.createIcons();
+  if (window.lucide && typeof lucide.createIcons === 'function') {
+    lucide.createIcons();
+  }
 }
 
 // 3D Card Flipping
