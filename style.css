@@ -1,0 +1,113 @@
+/* Custom styling for Driver License Generator */
+
+/* 3D Perspective Card Container */
+.perspective-container {
+  perspective: 1200px;
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.card-3d.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: rotateX(0deg); /* fix for webkit rendering */
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* Security Guilloche Wave Texture */
+.guilloche-bg {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.12) 0%, rgba(248, 250, 252, 0) 70%),
+    repeating-radial-gradient(circle at 100% 100%, rgba(30, 64, 175, 0.05) 0, rgba(30, 64, 175, 0.05) 3px, transparent 3px, transparent 6px),
+    repeating-radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.05) 0, rgba(99, 102, 241, 0.05) 4px, transparent 4px, transparent 8px),
+    linear-gradient(45deg, rgba(226, 232, 240, 0.6) 25%, transparent 25%, transparent 75%, rgba(226, 232, 240, 0.6) 75%),
+    linear-gradient(-45deg, rgba(226, 232, 240, 0.6) 25%, transparent 25%, transparent 75%, rgba(226, 232, 240, 0.6) 75%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 12px 12px, 12px 12px;
+}
+
+/* Hologram Rainbow Sheen Effect */
+.holo-foil {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 0, 0.15) 0%,
+    rgba(255, 154, 0, 0.15) 15%,
+    rgba(208, 222, 33, 0.15) 30%,
+    rgba(79, 220, 74, 0.15) 45%,
+    rgba(63, 218, 216, 0.15) 60%,
+    rgba(47, 201, 226, 0.15) 75%,
+    rgba(28, 127, 238, 0.15) 90%,
+    rgba(95, 21, 242, 0.15) 100%
+  );
+  background-size: 200% 200%;
+  animation: holoSheen 4s ease infinite alternate;
+  mix-blend-mode: color-dodge;
+  z-index: 15;
+}
+
+@keyframes holoSheen {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Simulated PDF417 2D Barcode Pattern */
+.pdf417-block {
+  background: 
+    repeating-linear-gradient(90deg, #000 0, #000 2px, #fff 2px, #fff 4px, #000 4px, #000 7px, #fff 7px, #fff 9px, #000 9px, #000 13px, #fff 13px, #fff 15px),
+    repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.85) 3px, rgba(0,0,0,0.85) 4px);
+  background-blend-mode: overlay;
+}
+
+/* Custom Scrollbar */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Print Styling */
+@media print {
+  header, nav, .btn-primary, .btn-secondary, button, #sig-modal, .lg\:col-span-6:last-child, #section-guide, #section-quiz {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .perspective-container {
+    perspective: none !important;
+  }
+
+  .card-3d {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  #card-front, #card-back {
+    position: relative !important;
+    display: block !important;
+    page-break-after: always;
+    margin: 20px auto !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    transform: none !important;
+  }
+}
