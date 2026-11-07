@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Driver License Hub - Generator & DMV Guide</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Great+Vibes&family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <!-- html2canvas for card export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- JsBarcode for barcode rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25">
+          <i data-lucide="id-card" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-blue-300 bg-clip-text text-transparent">LicenseForge</span>
+          <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">Novelty & DMV Guide</span>
+        </div>
+      </div>
+
+      <!-- Tab Buttons -->
+      <nav class="flex items-center space-x-1 sm:space-x-2 bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
+        <button id="tab-generator" onclick="switchTab('generator')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 bg-blue-600 text-white shadow-md">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>Card Generator</span>
+        </button>
+        <button id="tab-guide" onclick="switchTab('guide')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-700/50">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>How to Get a License</span>
+        </button>
+        <button id="tab-quiz" onclick="switchTab('quiz')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-700/50">
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+          <span>DMV Practice Quiz</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Notice Banner -->
+  <div class="bg-blue-950/60 border-b border-blue-800/50 px-4 py-2.5 text-xs sm:text-sm text-blue-200 text-center flex items-center justify-center space-x-2">
+    <i data-lucide="shield-check" class="w-4 h-4 text-blue-400 flex-shrink-0"></i>
+    <span><strong>Novelty & Educational Tool:</strong> Generates novelty / prop cards for film, games, pets, or cosplay, plus official DMV test & application preparation.</span>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+    <!-- ==================== TAB 1: CARD GENERATOR ==================== -->
+    <div id="section-generator" class="tab-content transition-opacity duration-300">
+      
+      <!-- Quick Presets Carousel -->
+      <div class="mb-6 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap mr-2">Templates:</span>
+        <button onclick="applyPreset('california')" class="preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap active:scale-95">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> California Gold Star
+        </button>
+        <button onclick="applyPreset('newyork')" class="preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap active:scale-95">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span> New York Blue
+        </button>
+        <button onclick="applyPreset('texas')" class="preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap active:scale-95">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span> Texas Lone Star
+        </button>
+        <button onclick="applyPreset('florida')" class="preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap active:scale-95">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Florida Sunshine
+        </button>
+        <button onclick="applyPreset('junior')" class="preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-purple-500 text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap active:scale-95">
+          <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span> Junior Driver Permit (Kids)
+        </button>
+        <button onclick="applyPreset('pet')" class="preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-pink-500 text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap active:scale-95">
+          <span class="w-2.5 h-2.5 rounded-full bg-pink-400"></span> Pet Driving License
+        </button>
+        <button onclick="randomizeData()" class="ml-auto px-3 py-1.5 rounded-full text-xs font-medium bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-300 transition flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="dice-5" class="w-3.5 h-3.5"></i> Random Sample
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT COLUMN: LIVE CARD PREVIEW & ACTIONS (Sticky on Desktop) -->
+        <div class="lg:col-span-6 lg:sticky lg:top-24 space-y-5">
+          
+          <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 shadow-2xl backdrop-blur-xl">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Live Render
+                </span>
+                <span id="preview-face-indicator" class="text-xs text-slate-400 font-medium">Front Side</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <!-- Card Flip Button -->
+                <button onclick="flipCard()" class="px-3 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition active:scale-95">
+                  <i data-lucide="rotate-3d" class="w-3.5 h-3.5"></i>
+                  <span>Flip Card</span>
+                </button>
+                <!-- Hologram Sheen Toggle -->
+                <button onclick="toggleHologram()" id="btn-holo" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1 transition">
+                  <i data-lucide="sparkle" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span class="hidden sm:inline">Holo</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 3D Card Scene Container -->
+            <div class="perspective-container py-2 flex justify-center items-center overflow-hidden">
+              <div id="license-card-3d" class="card-3d relative w-full max-w-[500px] aspect-[1.586/1] select-none transition-transform duration-700">
+                
+                <!-- ================= FRONT OF CARD ================= -->
+                <div id="card-front" class="card-face card-front absolute inset-0 rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-gradient-to-br from-blue-50 via-slate-100 to-blue-100 text-slate-900">
+                  
+                  <!-- Security Guilloche Waves Background -->
+                  <div class="guilloche-bg absolute inset-0 opacity-40 pointer-events-none"></div>
+                  
+                  <!-- Holographic Foil Sheen Overlay (optional toggle) -->
+                  <div id="holo-layer" class="holo-foil absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
+
+                  <!-- Specimen Watermark -->
+                  <div id="watermark-overlay" class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                    <span class="text-slate-900/15 font-black text-4xl sm:text-5xl -rotate-25 tracking-widest uppercase border-4 border-slate-900/15 px-6 py-2 rounded-xl">NOVELTY SPECIMEN</span>
+                  </div>
+
+                  <!-- Card Header Banner -->
+                  <div id="card-header" class="relative z-10 px-4 py-2.5 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 text-white flex items-center justify-between border-b-2 border-amber-400">
+                    <div>
+                      <div id="card-state-name" class="font-black text-lg sm:text-xl tracking-wider uppercase leading-none drop-shadow">CALIFORNIA</div>
+                      <div id="card-license-type" class="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-amber-300 mt-0.5">DRIVER LICENSE</div>
+                    </div>
+                    
+                    <!-- REAL ID Star / Bear Emblem -->
+                    <div class="flex items-center space-x-2">
+                      <div id="real-id-star" class="w-8 h-8 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center font-black shadow-md border-2 border-white/80">
+                        <i data-lucide="star" class="w-4 h-4 fill-amber-950"></i>
+                      </div>
+                      <div id="organ-donor-badge" class="w-7 h-7 rounded-full bg-rose-500 text-white flex flex-col items-center justify-center text-[7px] font-black leading-tight shadow-md border border-white">
+                        <i data-lucide="heart" class="w-3 h-3 fill-white"></i>
+                        <span>DONOR</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Card Body -->
+                  <div class="relative z-10 p-3 sm:p-4 grid grid-cols-12 gap-3 h-[calc(100%-54px)]">
+                    
+                    <!-- Left Column: Photo & Ghost Mini-Photo -->
+                    <div class="col-span-4 flex flex-col items-center justify-between">
+                      <div class="relative w-full aspect-[3/4] rounded-lg overflow-hidden border-2 border-slate-400/60 shadow-md bg-blue-100 flex items-center justify-center">
+                        <img id="card-photo-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="License portrait" class="w-full h-full object-cover">
+                        <div id="photo-overlay-filter" class="absolute inset-0 bg-blue-500/10 mix-blend-multiply pointer-events-none"></div>
+                      </div>
+                      
+                      <!-- Signature Under Photo -->
+                      <div class="w-full mt-1.5 flex flex-col items-center">
+                        <div class="w-full h-7 sm:h-9 flex items-center justify-center border-b border-slate-400/80 px-1 overflow-hidden">
+                          <img id="card-signature-img" class="h-full max-w-full object-contain filter contrast-125" src="" alt="Signature" style="display: none;">
+                          <span id="card-signature-text" class="font-['Caveat'] text-lg sm:text-xl text-blue-950 leading-none truncate font-bold">Jane A. Doe</span>
+                        </div>
+                        <span class="text-[7px] text-slate-500 uppercase tracking-wider font-semibold">Signature</span>
+                      </div>
+                    </div>
+
+                    <!-- Right Column: Personal Data & Codes -->
+                    <div class="col-span-8 flex flex-col justify-between pl-1">
+                      
+                      <!-- Driver License Number & Expiration -->
+                      <div class="flex items-start justify-between border-b border-slate-300 pb-1">
+                        <div>
+                          <span class="text-[8px] font-bold text-red-600 block leading-none">4d DLN</span>
+                          <span id="card-dln" class="font-['Share_Tech_Mono'] font-extrabold text-sm sm:text-base text-red-600 tracking-wider">D1234567</span>
+                        </div>
+                        <div class="text-right">
+                          <span class="text-[8px] font-bold text-red-600 block leading-none">4b EXP</span>
+                          <span id="card-exp" class="font-['Share_Tech_Mono'] font-bold text-xs sm:text-sm text-red-600">12/04/2029</span>
+                        </div>
+                      </div>
+
+                      <!-- Name & Address -->
+                      <div class="space-y-0.5 text-slate-800">
+                        <div>
+                          <span class="text-[7px] font-bold text-slate-500 leading-none">1, 2 NAME</span>
+                          <div id="card-fullname" class="font-bold text-xs sm:text-sm uppercase tracking-wide leading-tight text-slate-900">DOE, JANE ALEXIS</div>
+                        </div>
+                        <div>
+                          <span class="text-[7px] font-bold text-slate-500 leading-none">8 ADDRESS</span>
+                          <div id="card-address" class="text-[9px] sm:text-[10px] font-semibold leading-tight uppercase">1042 SUNSET BLVD</div>
+                          <div id="card-citystate" class="text-[9px] sm:text-[10px] font-semibold leading-tight uppercase">LOS ANGELES, CA 90026</div>
+                        </div>
+                      </div>
+
+                      <!-- Detailed Specs Grid & Ghost Photo -->
+                      <div class="flex items-end justify-between pt-1 border-t border-slate-200">
+                        <div class="grid grid-cols-3 gap-x-2 gap-y-0.5 text-[8px] sm:text-[9px]">
+                          <div><span class="text-slate-500 block text-[6.5px] font-bold">3 DOB</span><span id="card-dob" class="font-bold text-slate-900">04/18/1998</span></div>
+                          <div><span class="text-slate-500 block text-[6.5px] font-bold">15 SEX</span><span id="card-sex" class="font-bold text-slate-900">F</span></div>
+                          <div><span class="text-slate-500 block text-[6.5px] font-bold">16 HGT</span><span id="card-hgt" class="font-bold text-slate-900">5'-06"</span></div>
+                          <div><span class="text-slate-500 block text-[6.5px] font-bold">18 EYES</span><span id="card-eyes" class="font-bold text-slate-900">BRN</span></div>
+                          <div><span class="text-slate-500 block text-[6.5px] font-bold">9 CLASS</span><span id="card-class" class="font-bold text-slate-900">C</span></div>
+                          <div><span class="text-slate-500 block text-[6.5px] font-bold">4a ISS</span><span id="card-iss" class="font-bold text-slate-900">12/04/2024</span></div>
+                        </div>
+
+                        <!-- Secondary Ghost Portrait (Security feature) -->
+                        <div class="w-10 sm:w-12 aspect-[3/4] rounded border border-slate-300 overflow-hidden opacity-60 filter grayscale contrast-125 bg-slate-200">
+                          <img id="card-ghost-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Ghost photo" class="w-full h-full object-cover">
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- ================= BACK OF CARD ================= -->
+                <div id="card-back" class="card-face card-back absolute inset-0 rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300 text-slate-900">
+                  
+                  <!-- Magnetic Stripe -->
+                  <div class="w-full h-10 sm:h-12 bg-slate-900 mt-4 border-y border-black"></div>
+
+                  <div class="p-4 flex flex-col justify-between h-[calc(100%-48px)]">
+                    
+                    <!-- Back Disclaimers & Class Explanation -->
+                    <div class="grid grid-cols-12 gap-2 text-[7.5px] sm:text-[8px] text-slate-700 leading-tight">
+                      <div class="col-span-8 space-y-1">
+                        <div class="font-bold uppercase tracking-wider text-slate-900">Department of Motor Vehicles</div>
+                        <p>This card is issued as a license to operate a motor vehicle. Must be carried when operating a motor vehicle.</p>
+                        <p class="font-mono text-[7px] text-slate-500">ENDORSEMENTS: NONE | RESTRICTIONS: NONE</p>
+                      </div>
+                      <div class="col-span-4 text-right">
+                        <div class="font-bold text-rose-700">ORGAN DONOR</div>
+                        <div class="text-[7px] text-slate-500">Cardholder has registered as an anatomical donor upon death.</div>
+                      </div>
+                    </div>
+
+                    <!-- 2D Barcode (PDF417 Simulation) and 1D Barcode -->
+                    <div class="bg-white p-2 rounded-lg border border-slate-300 flex items-center justify-between gap-2 shadow-inner">
+                      <!-- 2D Barcode grid simulation -->
+                      <div class="pdf417-block w-40 h-10 sm:h-12 bg-slate-900 rounded overflow-hidden"></div>
+                      
+                      <!-- 1D Linear Barcode Canvas -->
+                      <div class="flex-1 flex justify-end overflow-hidden">
+                        <svg id="barcode-1d" class="h-9 sm:h-11 max-w-full"></svg>
+                      </div>
+                    </div>
+
+                    <!-- Bottom Notice -->
+                    <div class="text-center text-[7px] text-slate-500 font-semibold uppercase tracking-wider border-t border-slate-300 pt-1">
+                      FOR NOVELTY & PROP / EDUCATIONAL PURPOSES ONLY • NOT AN OFFICIAL GOVERNMENT ID
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Download and Export Buttons -->
+            <div class="mt-4 pt-4 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <button onclick="downloadCard('front')" class="btn-primary flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition active:scale-95">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Download Front</span>
+              </button>
+              <button onclick="downloadCard('back')" class="btn-secondary flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition active:scale-95">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Download Back</span>
+              </button>
+              <button onclick="printCard()" class="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition active:scale-95">
+                <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                <span>Print Card</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Feature Highlights Card -->
+          <div class="bg-slate-900/50 rounded-2xl p-4 border border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check-check" class="w-4 h-4 text-emerald-400"></i>
+              <span>High-resolution 300+ DPI render format</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="lock" class="w-4 h-4 text-blue-400"></i>
+              <span>100% Client-side & Private</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: INTERACTIVE DESIGNER CONTROLS -->
+        <div class="lg:col-span-6 space-y-6">
+
+          <!-- Section 1: Template & Appearance -->
+          <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="palette" class="w-4 h-4 text-blue-400"></i>
+              <span>1. Template & State Style</span>
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">State / Jurisdiction</label>
+                <select id="input-state" onchange="handleStateChange(this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="California">California</option>
+                  <option value="New York">New York</option>
+                  <option value="Texas">Texas</option>
+                  <option value="Florida">Florida</option>
+                  <option value="Washington">Washington</option>
+                  <option value="Illinois">Illinois</option>
+                  <option value="Junior Driver">Junior Driver (Kids)</option>
+                  <option value="Pet License">Pet Driver License</option>
+                  <option value="Galactic Pilot">Sci-Fi / Gamer Pilot</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">License Classification</label>
+                <select id="input-license-type" onchange="updateLicenseType(this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="DRIVER LICENSE">Driver License (Class C)</option>
+                  <option value="COMMERCIAL DRIVER LICENSE">Commercial Driver License (CDL)</option>
+                  <option value="MOTORCYCLE LICENSE">Motorcycle License (Class M)</option>
+                  <option value="IDENTIFICATION CARD">Identification Card (ID Only)</option>
+                  <option value="LEARNER PERMIT">Learner's Permit</option>
+                  <option value="NOVELTY PROP CARD">Novelty / Prop License</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Toggles (REAL ID, Organ Donor, Watermark) -->
+            <div class="flex flex-wrap items-center gap-4 pt-2 border-t border-slate-800 text-xs">
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" id="check-realid" checked onchange="toggleRealID(this.checked)" class="rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                <span class="text-slate-300 font-medium">REAL ID Star</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" id="check-donor" checked onchange="toggleDonor(this.checked)" class="rounded bg-slate-800 border-slate-700 text-rose-600 focus:ring-rose-500 w-4 h-4">
+                <span class="text-slate-300 font-medium">Organ Donor Badge</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" id="check-watermark" checked onchange="toggleWatermark(this.checked)" class="rounded bg-slate-800 border-slate-700 text-amber-600 focus:ring-amber-500 w-4 h-4">
+                <span class="text-slate-300 font-medium">Specimen Watermark</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Section 2: Photo & Signature -->
+          <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="camera" class="w-4 h-4 text-blue-400"></i>
+              <span>2. Photo & Signature</span>
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Photo Upload -->
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Portrait Photo</label>
+                <div class="flex items-center gap-2">
+                  <label class="flex-1 cursor-pointer bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 rounded-xl px-3 py-2 text-xs text-center text-slate-300 font-medium transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="upload" class="w-3.5 h-3.5 text-blue-400"></i>
+                    <span>Upload Image</span>
+                    <input type="file" id="photo-upload-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+                  </label>
+                  <button onclick="cycleSamplePhoto()" class="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-300 transition" title="Try sample avatar">
+                    <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+                <span class="text-[10px] text-slate-500 mt-1 block">Supports JPG, PNG, WebP. Recommended: passport/portrait ratio.</span>
+              </div>
+
+              <!-- Signature Style -->
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Digital Signature</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" id="input-sig-text" placeholder="Type signature..." value="Jane A. Doe" oninput="updateSignatureText(this.value)" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <button onclick="openSignatureModal()" class="px-3 py-2 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 text-blue-300 text-xs font-medium transition flex items-center gap-1" title="Draw with finger or mouse">
+                    <i data-lucide="pen-tool" class="w-3.5 h-3.5"></i>
+                    <span>Draw</span>
+                  </button>
+                </div>
+                <span class="text-[10px] text-slate-500 mt-1 block">Type to use cursive font or click "Draw" for handwriting.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Personal Information -->
+          <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="user-check" class="w-4 h-4 text-blue-400"></i>
+              <span>3. Personal Information</span>
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">First & Middle Name</label>
+                <input type="text" id="input-firstname" value="Jane Alexis" oninput="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Last Name</label>
+                <input type="text" id="input-lastname" value="Doe" oninput="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Street Address</label>
+                <input type="text" id="input-address" value="1042 Sunset Blvd" oninput="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">City, State, ZIP</label>
+                <input type="text" id="input-citystate" value="Los Angeles, CA 90026" oninput="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+
+            <!-- License Dates & Number -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Driver License #</label>
+                <div class="flex">
+                  <input type="text" id="input-dln" value="D1234567" oninput="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-l-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+                  <button onclick="generateRandomDLN()" class="bg-slate-700 hover:bg-slate-600 px-2 rounded-r-xl border border-l-0 border-slate-700 text-slate-300" title="Randomize #">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Issue Date</label>
+                <input type="date" id="input-iss" value="2024-12-04" onchange="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Expiration Date</label>
+                <input type="date" id="input-exp" value="2029-12-04" onchange="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+
+            <!-- Physical Specs -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Date of Birth</label>
+                <input type="date" id="input-dob" value="1998-04-18" onchange="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Sex</label>
+                <select id="input-sex" onchange="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="F">F - Female</option>
+                  <option value="M">M - Male</option>
+                  <option value="X">X - Non-Binary</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Height</label>
+                <input type="text" id="input-hgt" value="5'-06&quot;" oninput="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Eye Color</label>
+                <select id="input-eyes" onchange="updateCardData()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="BRN">BRN - Brown</option>
+                  <option value="BLU">BLU - Blue</option>
+                  <option value="GRN">GRN - Green</option>
+                  <option value="HAZ">HAZ - Hazel</option>
+                  <option value="GRY">GRY - Gray</option>
+                  <option value="BLK">BLK - Black</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==================== TAB 2: HOW TO GET A DRIVER LICENSE GUIDE ==================== -->
+    <div id="section-guide" class="tab-content hidden space-y-8">
+      
+      <!-- Guide Hero -->
+      <div class="bg-gradient-to-r from-blue-900/60 via-indigo-900/50 to-slate-900 rounded-3xl p-6 sm:p-10 border border-blue-800/40 shadow-2xl relative overflow-hidden">
+        <div class="relative z-10 max-w-3xl">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-3">
+            <i data-lucide="compass" class="w-3.5 h-3.5 mr-1.5"></i> Comprehensive DMV Roadmap
+          </span>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+            How to Get a Real Driver's License
+          </h1>
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            Obtaining a valid government-issued driver's license involves clear, structured steps across most states and countries. Follow this interactive guide to understand requirements, prepare essential documents, and pass your tests on the first try.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Interactive Timeline -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Step 1 -->
+        <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 relative hover:border-blue-500/50 transition">
+          <div class="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-bold text-lg mb-4">
+            1
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">Check Eligibility & Prepare Documents</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Gather your proof of identity, legal presence, Social Security number, and two proofs of state residency.
+          </p>
+          <div class="text-[11px] font-medium text-blue-400 flex items-center gap-1">
+            <i data-lucide="file-check" class="w-3.5 h-3.5"></i> See Document Checklist below
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 relative hover:border-blue-500/50 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-lg mb-4">
+            2
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">Pass Written DMV Permit Exam</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Study your official State Driver Handbook and take the knowledge test covering road signs, right-of-way, and speed laws.
+          </p>
+          <button onclick="switchTab('quiz')" class="text-[11px] font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+            <i data-lucide="play-circle" class="w-3.5 h-3.5"></i> Take Practice Quiz &rarr;
+          </button>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 relative hover:border-blue-500/50 transition">
+          <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-bold text-lg mb-4">
+            3
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">Practice Behind-The-Wheel</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Drive with a licensed adult or certified driving instructor. Most states mandate 30–50 hours of practice (including 10 hours at night).
+          </p>
+          <div class="text-[11px] font-medium text-purple-400 flex items-center gap-1">
+            <i data-lucide="car" class="w-3.5 h-3.5"></i> Log your practice hours
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 relative hover:border-blue-500/50 transition">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-lg mb-4">
+            4
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">Schedule & Pass Driving Road Test</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Bring a registered, insured car for your practical test. The examiner evaluates smooth stops, turns, lane changes, and parking.
+          </p>
+          <div class="text-[11px] font-medium text-emerald-400 flex items-center gap-1">
+            <i data-lucide="award" class="w-3.5 h-3.5"></i> Receive official license card
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Interactive Checklist Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Document Verification Checklist -->
+        <div class="lg:col-span-7 bg-slate-900/80 rounded-2xl p-6 border border-slate-800">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="clipboard-list" class="w-4 h-4 text-blue-400"></i>
+                <span>DMV Document Checklist</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Check off items to ensure you have everything before your appointment</p>
+            </div>
+            <span id="checklist-progress" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+              0 / 6 Ready
+            </span>
+          </div>
+
+          <div class="space-y-3">
+            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 cursor-pointer transition">
+              <input type="checkbox" onchange="updateChecklistProgress()" class="chk-item mt-0.5 rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <div class="text-xs">
+                <span class="font-semibold text-slate-200 block">1. Proof of Identity & Legal Presence</span>
+                <span class="text-slate-400">US Birth Certificate, Valid US Passport, Permanent Resident Card (Green Card), or Certificate of Naturalization.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 cursor-pointer transition">
+              <input type="checkbox" onchange="updateChecklistProgress()" class="chk-item mt-0.5 rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <div class="text-xs">
+                <span class="font-semibold text-slate-200 block">2. Social Security Verification</span>
+                <span class="text-slate-400">Social Security card, W-2 tax form, SSA-1099, or non-SSA 1099 form with full SSN displayed.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 cursor-pointer transition">
+              <input type="checkbox" onchange="updateChecklistProgress()" class="chk-item mt-0.5 rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <div class="text-xs">
+                <span class="font-semibold text-slate-200 block">3. Two Proofs of Physical State Residency (REAL ID)</span>
+                <span class="text-slate-400">Utility bill (water, gas, electric), bank statement, rental lease agreement, or mortgage document with your residential address.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 cursor-pointer transition">
+              <input type="checkbox" onchange="updateChecklistProgress()" class="chk-item mt-0.5 rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <div class="text-xs">
+                <span class="font-semibold text-slate-200 block">4. Driver Education Certificate (If under 18)</span>
+                <span class="text-slate-400">Form showing completion of 30 hours classroom instruction and behind-the-wheel driver training enrollment.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 cursor-pointer transition">
+              <input type="checkbox" onchange="updateChecklistProgress()" class="chk-item mt-0.5 rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <div class="text-xs">
+                <span class="font-semibold text-slate-200 block">5. Road Test Vehicle Documents</span>
+                <span class="text-slate-400">Valid vehicle registration card and proof of current auto insurance for the car used during the road test.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 cursor-pointer transition">
+              <input type="checkbox" onchange="updateChecklistProgress()" class="chk-item mt-0.5 rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <div class="text-xs">
+                <span class="font-semibold text-slate-200 block">6. Application Fee & Eyeglasses/Contacts</span>
+                <span class="text-slate-400">Payment method for test/licensing fee ($35–$65 depending on state) and your corrective lenses for the vision test.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Crucial Road Test Tips -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800">
+            <h3 class="text-base font-bold text-white flex items-center gap-2 mb-3">
+              <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400"></i>
+              <span>Top Road Test Tips to Pass</span>
+            </h3>
+            <ul class="space-y-3 text-xs text-slate-300">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                <span><strong>Full Stop at Signs:</strong> Come to a complete stop behind the white limit line for 3 full seconds. Never roll through!</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                <span><strong>Exaggerate Shoulder Checks:</strong> Visually turn your head over your shoulder to check blind spots before changing lanes or pulling out.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                <span><strong>Speed Control:</strong> Stay strictly within the speed limit. In school zones or residential streets, drive according to conditions.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                <span><strong>Two Hands on the Wheel:</strong> Keep hands in the 9-and-3 or 8-and-4 position throughout the test.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                <span><strong>Signal 100 Feet Early:</strong> Activate turn signals at least 100 feet before making turns or pulling to the curb.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-gradient-to-br from-blue-950/60 to-slate-900 rounded-2xl p-5 border border-blue-800/40 text-center">
+            <h4 class="font-bold text-white text-sm mb-1">Want to test your knowledge right now?</h4>
+            <p class="text-xs text-slate-400 mb-3">Try our interactive 10-question DMV practice test with instant explanations.</p>
+            <button onclick="switchTab('quiz')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition inline-flex items-center gap-1.5">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Start DMV Practice Exam
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==================== TAB 3: DMV PRACTICE QUIZ ==================== -->
+    <div id="section-quiz" class="tab-content hidden max-w-3xl mx-auto space-y-6">
+      
+      <!-- Quiz Header Card -->
+      <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-800 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-1">
+            Official Road Rules
+          </span>
+          <h2 class="text-xl font-bold text-white">DMV Knowledge Practice Exam</h2>
+          <p class="text-xs text-slate-400">10 essential questions on road signs, speed limits, and traffic laws.</p>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block">Score</span>
+            <span id="quiz-score-badge" class="text-lg font-extrabold text-white">0 / 10</span>
+          </div>
+          <button onclick="restartQuiz()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition flex items-center gap-1.5">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Restart</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Questions Container -->
+      <div id="quiz-container" class="space-y-4">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <!-- Quiz Results Modal/Box -->
+      <div id="quiz-summary" class="hidden bg-gradient-to-r from-blue-950 to-indigo-950 p-6 rounded-2xl border border-blue-800/60 text-center space-y-3">
+        <div id="quiz-summary-icon" class="w-14 h-14 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-2xl font-bold">
+          🎉
+        </div>
+        <h3 id="quiz-summary-title" class="text-xl font-bold text-white">Exam Completed!</h3>
+        <p id="quiz-summary-desc" class="text-sm text-slate-300">You scored 9 out of 10 (90%). Passing grade is 80%.</p>
+        <button onclick="restartQuiz()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition inline-flex items-center gap-1.5">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Try Again
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== SIGNATURE DRAWING MODAL ==================== -->
+  <div id="sig-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-white text-base flex items-center gap-2">
+          <i data-lucide="pen-tool" class="w-4 h-4 text-blue-400"></i>
+          <span>Draw Your Signature</span>
+        </h3>
+        <button onclick="closeSignatureModal()" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <p class="text-xs text-slate-400">Sign with your mouse or finger inside the box below.</p>
+      
+      <div class="border-2 border-dashed border-slate-700 rounded-xl bg-white relative overflow-hidden">
+        <canvas id="signature-canvas" width="460" height="160" class="w-full h-40 touch-none cursor-crosshair"></canvas>
+      </div>
+
+      <div class="flex items-center justify-between pt-2">
+        <button onclick="clearSignatureCanvas()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Clear Pad
+        </button>
+        <div class="flex items-center space-x-2">
+          <button onclick="closeSignatureModal()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+            Cancel
+          </button>
+          <button onclick="saveSignatureCanvas()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow transition">
+            Save Signature
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
